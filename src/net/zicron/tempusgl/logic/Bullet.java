@@ -53,6 +53,7 @@ public class Bullet extends Entity{
 			glVertex2f(x, y + 8);
 		glEnd();
 		
+		collider.render();
 	}
 
 }

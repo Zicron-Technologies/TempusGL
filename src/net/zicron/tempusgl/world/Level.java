@@ -1,5 +1,6 @@
 package net.zicron.tempusgl.world;
 
+import net.zicron.tempusgl.Tempus;
 import net.zicron.tempusgl.gfx.Entity;
 import net.zicron.tempusgl.gfx.Renderer;
 import net.zicron.tempusgl.io.Log;
@@ -62,7 +63,7 @@ public class Level extends Entity{
 
 	public void render() {
 		//Log.info("Drawing");
-		
+		glEnable(GL_TEXTURE_2D);
 		for(int x = 0; x < 28; x++) {
 			for(int y = 0; y < 12; y++) {
 				byte data = level1[x + y * 28];
@@ -79,15 +80,22 @@ public class Level extends Entity{
 				}
 
 				
+				
+				Tempus.gameTextures.bind();
+				
 				glBegin(GL_QUADS);
+					glTexCoord2f(0, 0);
 					glVertex2f(x * 32 + xOffset, y * 32 + yOffset);
+					glTexCoord2f(1f/16f, 0);
 					glVertex2f((x * 32) + 32 + xOffset, y * 32 + yOffset);
+					glTexCoord2f(1f/16f, 1f/16f);
 					glVertex2f((x * 32) + 32 + xOffset, (y * 32) + 32 + yOffset);
+					glTexCoord2f(0, 1f/16f);
 					glVertex2f(x * 32 + xOffset, (y * 32) + 32 + yOffset);
 				glEnd();
 			}
 		}
-		
+		glDisable(GL_TEXTURE_2D);
 		tileCollider.render();
 	}
 

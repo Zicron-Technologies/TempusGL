@@ -1,22 +1,31 @@
 package net.zicron.tempusgl.world;
 
+import static org.lwjgl.opengl.GL11.GL_LINES;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.*;
+
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
+
 import net.zicron.tempusgl.Tempus;
 import net.zicron.tempusgl.gfx.Entity;
 import net.zicron.tempusgl.gfx.Renderer;
 import net.zicron.tempusgl.gfx.Screen;
-import net.zicron.tempusgl.io.Log;
+import net.zicron.tempusgl.gfx.text.Font;
 import net.zicron.tempusgl.logic.AABB;
 import net.zicron.tempusgl.logic.Bullet;
 import net.zicron.tempusgl.logic.TileCollider;
 
-import static org.lwjgl.opengl.GL11.*;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
 public class Player extends Entity{
 	
-	private final int moveSpeed = 2;
+	private final int moveSpeed = 4;
 	private int x;
 	private int y;
 	private int vel;
@@ -43,6 +52,7 @@ public class Player extends Entity{
 		y = (Screen.current.height / 2) - 8;
 		
 		collider = new AABB(x, y, 16, 16, (byte)-1);
+		
 	}
 
 	public void tick() {		
@@ -115,7 +125,11 @@ public class Player extends Entity{
 	
 
 	public void render() {
-		glColor3f(0.0f, 0.0f, 0.0f);
+		Font.draw(0, 0, "Tempus_GL - Hunter Wilcox", 0xFFDAAF, 2, false, Tempus.fontTextures);
+		Font.draw(0, 8, "FPS: " + Renderer.getFPS(), 0xFFFFFF, 2, false, Tempus.fontTextures);
+		
+		Font.draw(x - 32, y - 16, "JudgeGlass", 0xFFFFFF, 1, true, Tempus.fontTextures);
+		
 		glBegin(GL_QUADS);
 			glVertex2f(x, y);
 			glVertex2f(x + 16, y);

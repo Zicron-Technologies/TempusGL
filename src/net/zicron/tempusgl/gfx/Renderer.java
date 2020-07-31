@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 
 public class Renderer {
-private int fps;
+	private static int fps;
 	
 	public static List<Entity> entities = new ArrayList<>();
 	public static List<Entity> entityQueue = new ArrayList<>();
@@ -41,12 +41,7 @@ private int fps;
                 shouldRender = true;
             }
             
-            try {
-				Thread.sleep(4);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            
 
             if (shouldRender) {
                 frames++;
@@ -64,6 +59,10 @@ private int fps;
             }
         }
         stop();
+	}
+	
+	public static int getFPS() {
+		return fps;
 	}
 	
 	public static void destroy(Entity e) {

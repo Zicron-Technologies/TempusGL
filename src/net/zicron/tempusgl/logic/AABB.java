@@ -2,6 +2,8 @@ package net.zicron.tempusgl.logic;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import net.zicron.tempusgl.Tempus;
+
 public class AABB {
 	
 	public int x;
@@ -54,6 +56,7 @@ public class AABB {
 	}
 	
 	public void render() {
+		if(!Tempus.DRAW_HITBOX) return;
 		glColor3f(0.11f, 0.82f, 1f);
 		glLineWidth(1);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
