@@ -7,7 +7,7 @@ import net.zicron.tempusgl.world.Player;
 
 public class Tempus {
 	
-	public static final boolean DRAW_HITBOX = true;
+	public static boolean DRAW_HITBOX = false;
 	
 	
 	

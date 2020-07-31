@@ -6,11 +6,13 @@ import net.zicron.tempusgl.gfx.Renderer;
 import net.zicron.tempusgl.gfx.Screen;
 import net.zicron.tempusgl.io.Log;
 import net.zicron.tempusgl.logic.AABB;
+import net.zicron.tempusgl.logic.Bullet;
 import net.zicron.tempusgl.logic.TileCollider;
 
 import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class Player extends Entity{
 	
@@ -40,7 +42,7 @@ public class Player extends Entity{
 		x = (Screen.current.width / 2) - 8;
 		y = (Screen.current.height / 2) - 8;
 		
-		collider = new AABB(x, y, 16, 16);
+		collider = new AABB(x, y, 16, 16, (byte)-1);
 	}
 
 	public void tick() {		
@@ -78,6 +80,27 @@ public class Player extends Entity{
 			}
 		}
 		
+		while(Mouse.next()) {
+			if(Mouse.getEventButtonState()) {
+				if(Mouse.getEventButton() == 0) {
+					int mouseX = Mouse.getX();
+					int mouseY = (-Mouse.getY() + Screen.current.height);
+					
+					int rise = ((mouseY) - (y+8));
+					int run = ((mouseX) - (x+8));
+					
+					new Bullet(x+8, y+8, rise, run);
+				}
+			}
+		}
+		
+		while(Keyboard.next()) {
+			if(Keyboard.getEventKey() == Keyboard.KEY_F) {
+				if(Keyboard.getEventKeyState())
+					Tempus.DRAW_HITBOX = !Tempus.DRAW_HITBOX;
+			}
+		}
+		
 		
 		vel = 0;
 	}
@@ -98,6 +121,12 @@ public class Player extends Entity{
 			glVertex2f(x + 16, y);
 			glVertex2f(x + 16, y + 16);
 			glVertex2f(x, y + 16);
+		glEnd();
+		
+		glColor3f(0f, 1.0f, 1.0f);
+		glBegin(GL_LINES);
+			glVertex2f(x+8, y+8);
+			glVertex2f(Mouse.getX(), (-Mouse.getY() + Screen.current.height));
 		glEnd();
 		
 		if(Tempus.DRAW_HITBOX) {

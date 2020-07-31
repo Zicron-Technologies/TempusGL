@@ -10,14 +10,16 @@ public class AABB {
 	public int oy;
 	public int width;
 	public int height;
+	public byte id;
 	
-	public AABB(int x, int y, int width, int height) {
+	public AABB(int x, int y, int width, int height, byte id) {
 		this.x = x;
 		this.y = y;
 		ox = x;
 		oy = y;
 		this.width = width;
 		this.height = height;
+		this.id = id;
 	}
 	
 	public static boolean checkCollision(AABB b1, AABB b2) {
