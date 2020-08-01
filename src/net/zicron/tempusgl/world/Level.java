@@ -1,57 +1,51 @@
 package net.zicron.tempusgl.world;
 
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+
 import net.zicron.tempusgl.Tempus;
+import net.zicron.tempusgl.gfx.Drawer;
 import net.zicron.tempusgl.gfx.Entity;
 import net.zicron.tempusgl.gfx.Renderer;
+import net.zicron.tempusgl.gfx.Screen;
+import net.zicron.tempusgl.io.LevelLoader;
 import net.zicron.tempusgl.io.Log;
 import net.zicron.tempusgl.logic.AABB;
 import net.zicron.tempusgl.logic.TileCollider;
 
-import static org.lwjgl.opengl.GL11.*;
-
-import org.lwjgl.input.Keyboard;
-
 public class Level extends Entity{
 	
 	TileCollider tileCollider = null;
-	
-	private byte[] level1 = {
-			1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 
-			0, 1, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1, 0,
-			0, 1, 0, 2, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 1, 0,
-			0, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 1, 0,
-			0, 1, 0, 2, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 1, 0,
-			0, 1, 0, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1, 0,
-			0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	};
+	LevelLoader level1 = null;
 	
 	public static int xOffset;
 	public static int yOffset;
 	
 	public Level() {
-		Renderer.entities.add(this);
-		Log.info("Level Len: " + level1.length);
-		
+		Renderer.entities.add(this);		
 		tileCollider = new TileCollider();
+		level1 = new LevelLoader("res/level1.txt");
+		new Enemy(100, 100);
 		
 		xOffset-=40;
 		addColliders();
 	}
 	
 	private void addColliders() {
-		for(int x = 0; x < 28; x++) {
-			for(int y = 0; y < 12; y++) {
-				byte data = level1[x + y * 28];
+		for(int x = 0; x < level1.width; x++) {
+			for(int y = 0; y < level1.height; y++) {
+				byte data = level1.data[x + y * level1.width];
 				if(data != 2) {
 					tileCollider.colliders.add(new AABB(x * 32, y * 32, 32, 32, data));
 				}
 			}
 		}
+	}
+	
+	public static boolean isOutOfBounds(int xx, int yy) {
+		return !((xx < Screen.current.width) && (xx > -32) && (yy < Screen.current.height) && (yy > -32));
 	}
 	
 
@@ -64,9 +58,9 @@ public class Level extends Entity{
 	public void render() {
 		//Log.info("Drawing");
 		glEnable(GL_TEXTURE_2D);
-		for(int x = 0; x < 28; x++) {
-			for(int y = 0; y < 12; y++) {
-				byte data = level1[x + y * 28];
+		for(int x = 0; x < level1.width; x++) {
+			for(int y = 0; y < level1.height; y++) {
+				byte data = level1.data[x + y * level1.width];
 				switch(data) {
 				case 0:
 					glColor3f(1.0f, 1.0f, 1.0f);
@@ -83,16 +77,13 @@ public class Level extends Entity{
 				
 				Tempus.gameTextures.bind();
 				
-				glBegin(GL_QUADS);
-					glTexCoord2f(0, 0);
-					glVertex2f(x * 32 + xOffset, y * 32 + yOffset);
-					glTexCoord2f(1f/16f, 0);
-					glVertex2f((x * 32) + 32 + xOffset, y * 32 + yOffset);
-					glTexCoord2f(1f/16f, 1f/16f);
-					glVertex2f((x * 32) + 32 + xOffset, (y * 32) + 32 + yOffset);
-					glTexCoord2f(0, 1f/16f);
-					glVertex2f(x * 32 + xOffset, (y * 32) + 32 + yOffset);
-				glEnd();
+				int xx = (x * 32) + xOffset;
+				int yy = y * 32 + yOffset;
+				
+				if(!isOutOfBounds(xx, yy)) {
+					Drawer.drawTexturedQuad(x, y, xOffset, yOffset, Tempus.gameTextures, data);
+				}
+				
 			}
 		}
 		glDisable(GL_TEXTURE_2D);

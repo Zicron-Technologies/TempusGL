@@ -3,6 +3,7 @@ package net.zicron.tempusgl.logic;
 import net.zicron.tempusgl.gfx.Entity;
 import net.zicron.tempusgl.gfx.Renderer;
 import net.zicron.tempusgl.io.Log;
+import net.zicron.tempusgl.world.Level;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -28,10 +29,11 @@ public class Bullet extends Entity{
 		Renderer.addToEntityQueue(this);
 	}
 	
-	public void tick() {
+	public void tick() {		
 		if(counter % 2 == 0) {
 			x += run/10;
 			y += rise/10;
+			//addToPos(run/10, rise/10);
 		}
 		
 		collider.setX(x);
@@ -42,6 +44,12 @@ public class Bullet extends Entity{
 		}
 		
 		counter++;
+	}
+	
+	private void addToPos(int xx, int yy) {
+		//x = Level.xOffset + collider.ox + xx;
+		Log.info("X: " + x);
+		//y = Level.yOffset + collider.oy + yy;
 	}
 
 	public void render() {
